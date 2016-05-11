@@ -204,6 +204,9 @@ var callCurrentResource = function(info, req, res) {
          logger.fatal(e.stack || e);
          // If we have a direct error
 
+         if( e.status ){
+            return res.status(e.status).send(e);
+         }
          if (Options.prettyErrors && e.stack) {
             return res.status(500).send(NiceTrace(e));
          }

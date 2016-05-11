@@ -38,10 +38,10 @@ realm.module("test.route.MainRoute", ["realm.router.path", "realm.router.inject"
     _createClass(MainRoute, null, [{
       key: "get",
       value: function get($query, $permission) {
-
-        return {
-          a: $permission
-        };
+        return assert.bad_request();
+        //   return {
+        //       a: $permission
+        //   }
       }
     }, {
       key: "post",

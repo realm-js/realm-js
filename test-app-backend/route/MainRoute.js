@@ -11,10 +11,10 @@ import Permissions from test.route;
 
 class MainRoute {
     static get($query, $permission) {
-
-        return {
-            a: $permission
-        }
+      return assert.bad_request();
+      //   return {
+      //       a: $permission
+      //   }
     }
     static post() {
 
