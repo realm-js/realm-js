@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Advisor Panel</title>
+
+   <!-- BEGIN META -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="keywords" content="">
+   <meta name="description" content="">
+
+   <script src="/bower_components/lodash/dist/lodash.min.js"></script>
+
+   <script src="/build/realm.min.js"></script>
+   <script src="/build/a.js"></script>
+
+   <script>
+   realm.module("A", function(){
+      return {
+         hello : new Date().getTime()
+      }
+   });
+
+
+
+
+
+   </script>
+</head>
+
+<body >
+   <div id="big-loader" class="spinner"></div>
+   <div class="application" ng-app="myApp" ui-view></div>
+</body>
+</html>

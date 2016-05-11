@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Error</title>
+      <link href='https://fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
+   </head>
+   <body>
+      <style>
+      .header {
+         background-color: #767676;
+         color:white;
+         padding: 5px 5px 5px 10px;
+         border-left: 5px solid #fbbd08;
+      }
+      h1 {
+         background-color: #db2828;
+         padding: 10px;
+         color:white;
+         margin-top: 0;
+      }
+      .current {
+         background-color: #d5d5d5;
+      }
+      .header .file {
+         font-size: 16px;
+      }
+      .header .func {
+         font-size: 14px;
+         color:#aeaeae;
+      }
+      .main {
+         width: 1024px;
+         margin: 0 10px 10px 10px;
+
+         margin: auto;
+
+      }
+      body {
+         margin: 0;
+         padding: 0;
+         font-family: 'Exo', sans-serif;
+      }
+      </style>
+      <div>
+
+         <div class="main">
+      <h1>{{error.error}}</h1>
+
+         {%for item in error.frames%}
+         <div>
+            <div class="header">
+               <div class="file">
+                  {{item.file}} (line {{item.line}})
+               </div>
+               <div class="func">
+                  {{item.function}}
+               </div>
+            </div>
+
+<pre><code class="js">{%for line, data in item.source%}<div
+      {% if line === item.line.toString() %} class="current" {%endif%}><span style="padding-right:10px;">{{line}}</span><span>{{data.code}}</span></div>{%endfor%}</code></pre>
+
+         </div>
+         {%endfor%}
+      </div>
+      </div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+      <script>
+      $(document).ready(function() {
+         $('code').each(function(i, block) {
+            hljs.highlightBlock(block);
+         });
+      });
+      </script>
+   </body>
+</html>
