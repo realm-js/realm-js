@@ -1,24 +1,25 @@
 "use realm";
 
-import path, inject, assert, cors from realm.router;
+import path, assert, cors from realm.router;
 
 import Permissions from test.route;
+import access from test.decorators;
 
 @cors()
 @path("/")
 
-@inject(Permissions, '$permission')
-
 class MainRoute {
-    static get($query, $permission) {
-      return assert.bad_request();
-      //   return {
-      //       a: $permission
-      //   }
-    }
-    static post() {
 
-    }
+   @access("view:2")
+   static get($query, $access) {
+      return {
+         hello: $access
+      };
+   }
+
+   static post() {
+
+   }
 };
 
 export MainRoute;
