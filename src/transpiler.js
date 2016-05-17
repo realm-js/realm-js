@@ -50,6 +50,12 @@ var wrapContents = function(data, isDev) {
       "') : self.realm}}(this));");
    return content.join('');
 }
+
+var transpileRiot = function() {
+   //riot.tag2('ui-base', '<div style="border:1px solid red"><yield></yield></div>', '', '', function(opts) {});
+   //riot.tag2('menu', 'this is my menu <ul><li>Menu1</li><li>Menu2</li></ul>', '', '', function(opts) {});
+}
+
 var transpileString = function(input, opts) {
    opts = opts || {};
    var auto = opts.auto;
@@ -66,20 +72,20 @@ var transpileString = function(input, opts) {
       var line = lines[i];
       var skipLine = false;
 
-      var _useRealm = line.match(/^"use realm"/);
+      var _useRealm = line.match(/^\s*"use realm"/);
       if (_useRealm) {
          skipLine = true;
          useRealm = true;
       }
       // custom module name
       var moduleMatched;
-      if ((moduleMatched = line.match(/^module\s+([a-z0-9.$_]+)/i))) {
+      if ((moduleMatched = line.match(/^\s*module\s+([a-z0-9.$_]+)/i))) {
          modulePath = moduleMatched[1];
          skipLine = true;
       }
 
       // exports
-      var _exports = line.match(/^(export\s+)(.*)/);
+      var _exports = line.match(/^\s*(export\s+)(.*)/);
       if (_exports && useRealm) {
          if (modulePath) {
             line = line.replace(_exports[1], "\n$_exports = ");
@@ -87,7 +93,7 @@ var transpileString = function(input, opts) {
       }
 
       // IMPORT
-      if (line.match(/^import/ig) && useRealm) {
+      if (line.match(/^\s*import/ig) && useRealm) {
          skipLine = true;
          var parser = new Parser();
          var tokens = line.match(/([a-z0-9$_.]+)/ig)
@@ -133,14 +139,13 @@ var transpileString = function(input, opts) {
       newLines.push("});")
    }
    return newLines.join('\n');
-
 }
 
-function cleanUpModulePath(path){
-   if( path[0] === "/"){
+function cleanUpModulePath(path) {
+   if (path[0] === "/") {
       path = path.slice(1, path.length)
    }
-   return path.replace(/\//,".");
+   return path.replace(/\//, ".");
 }
 
 module.exports = function(opts) {
@@ -169,7 +174,6 @@ module.exports = function(opts) {
       if (baseFileName) {
          var p = baseFileName.split("/" + fileName);
          var _package = p.length === 2 ? p[0] : null;
-
 
          var moduleName = path.basename(fileName, '.js');
          var __dir = moduleName;

@@ -14,16 +14,16 @@ gulp.task('watch', function() {
    gulp.watch(['src/**/*.js'], ['build']);
 });
 
-
-
 gulp.task('server', function() {
-  if (node) node.kill()
-  node = spawn('node', ['app.js'], {stdio: 'inherit'})
-  node.on('close', function (code) {
-    if (code === 8) {
-      gulp.log('Error detected, waiting for changes...');
-   }
-  });
+   if (node) node.kill()
+   node = spawn('node', ['app.js'], {
+      stdio: 'inherit'
+   })
+   node.on('close', function(code) {
+      if (code === 8) {
+         gulp.log('Error detected, waiting for changes...');
+      }
+   });
 });
 
 gulp.task("build", function() {
@@ -39,22 +39,42 @@ gulp.task("build", function() {
       .pipe(gulp.dest("./build"));
 });
 
-gulp.task('start',['server'],function() {
-    gulp.watch(['test-app-backend/**/*.js'], function(){
-       runSequence('build-backend', 'server')
-    });
+gulp.task('start', ['server'], function() {
+   gulp.watch(['test-app-backend/**/*.js'], function() {
+      runSequence('build-backend', 'server')
+   });
 });
 
-gulp.task("build-backend", function() {
-   return gulp.src("test-app-backend/**/*.js").pipe(realm.transpiler({
+gulp.task("build-riot", function() {
+   return gulp.src("test-app-riot/**/*.js").pipe(realm.transpiler({
          preffix: "test",
-         base : "test-app-backend",
-         target : "./test-backend.js"
+         base: "test-app-riot",
+         target: "./test-riot.js"
       }))
       .pipe(babel({
          presets: ["es2016"],
          plugins: ["transform-decorators-legacy"]
       }))
-      .pipe(realm.transpiler({wrap : true, dev : true}))
+      .pipe(realm.transpiler({
+         wrap: true,
+         dev: true
+      }))
+      .pipe(gulp.dest("./"));
+});
+
+gulp.task("build-backend", function() {
+   return gulp.src("test-app-backend/**/*.js").pipe(realm.transpiler({
+         preffix: "test",
+         base: "test-app-backend",
+         target: "./test-backend.js"
+      }))
+      .pipe(babel({
+         presets: ["es2016"],
+         plugins: ["transform-decorators-legacy"]
+      }))
+      .pipe(realm.transpiler({
+         wrap: true,
+         dev: true
+      }))
       .pipe(gulp.dest("./"));
 });
