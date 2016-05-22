@@ -7,7 +7,7 @@ module.exports = function(analyzed) {
    _.each(analyzed.exposed, function(exposedName) {
       var method = []
       method.push("'" + exposedName + "': function(){");
-      method.push('return BridgeRequest.connect("' + analyzed.name + '", arguments)');
+      method.push('return BridgeRequest.connect("' + analyzed.name + '", "' + exposedName + '", arguments)');
       method.push("}")
       methods.push(method.join(''));
    });
