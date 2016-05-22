@@ -242,27 +242,6 @@
          return resultPromise;
       }
    }
-
-   Realm.module("realm.bridge.Request", function() {
-      return function(path, json) {
-         return new Promise(function(resolve, reject) {
-            var oReq = new window.XMLHttpRequest();
-            oReq.open("POST", "/_realm_/bridge/" + path, true);
-            oReq.onreadystatechange = function() {
-               if (oReq.readyState == 4 && this.status === 200) {
-                  return resolve(JSON.parse(this.response))
-               } else {
-                  return reject({
-                     status: this.status,
-                     response: this.response
-                  });
-               }
-            };
-            oReq.send(json ? JSON.stringify(json) : '{}');
-         });
-      }
-   });
-
    Exports.realm = Realm;
 })(typeof module !== 'undefined' && module.exports,
    typeof module !== 'undefined' && module.exports ? global : this, this);

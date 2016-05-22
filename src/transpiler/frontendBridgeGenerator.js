@@ -7,7 +7,7 @@ module.exports = function(analyzed) {
    _.each(analyzed.exposed, function(exposedName) {
       var method = []
       method.push("'" + exposedName + "': function(){");
-      method.push('return Request("' + analyzed.name + '", arguments)');
+      method.push('return BridgeRequest.connect("' + analyzed.name + '", arguments)');
       method.push("}")
       methods.push(method.join(''));
    });
@@ -15,8 +15,8 @@ module.exports = function(analyzed) {
    lines.push('}')
    var data = {
       name: analyzed.name,
-      annotations: ['"realm.bridge.Request"'],
-      moduleNames: ['Request'],
+      annotations: ['"realm.router.BridgeRequest"'],
+      moduleNames: ['BridgeRequest'],
       lines: lines
    }
    return generator(data)

@@ -1,9 +1,9 @@
 
 (function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;
 
-realm.module("test.bridges.User",["realm.bridge.Request"],function(Request){ var $_exports;
+realm.module("test.bridges.User",["realm.router.BridgeRequest"],function(BridgeRequest){ var $_exports;
 $_exports = {
-'getUsers': function(){return Request("test.bridges.User", arguments)}
+'getUsers': function(){return BridgeRequest.connect("test.bridges.User", arguments)}
 }
 return $_exports;
 });
