@@ -39,7 +39,18 @@ var Writer = function(dest) {
    var universalFile = fs.openSync(files.universal, 'a');
    var backendFile = fs.openSync(files.backend, 'a');
    var frontendFile = fs.openSync(files.frontend, 'a');
+   // writing headers
+
    return {
+      writeAll: function(content) {
+         this.universal(content);
+         this.backend(content);
+         this.frontend(content);
+      },
+      writeHeaders: function() {
+         var header = '(function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;\n';
+         this.writeAll(header);
+      },
       universal: function(contents) {
          fs.writeSync(universalFile, "\n" + contents)
       },
@@ -49,7 +60,11 @@ var Writer = function(dest) {
       frontend: function(contents) {
          fs.writeSync(frontendFile, "\n" + contents)
       },
-      close: function() {
+      close: function(isDev) {
+         var p = isDev ? "./index.js" : 'realm-js';
+         var footer = "\n})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('" + p +
+            "') : self.realm}}(this));";
+         this.writeAll(footer);
          fs.closeSync(universalFile);
          fs.closeSync(backendFile);
          fs.closeSync(frontendFile);
@@ -58,10 +73,11 @@ var Writer = function(dest) {
 }
 var universal = function(directory, dest, opts) {
    opts = opts || {};
+   var isDev = opts.isDev;
 
    var walker = walk.walk(directory);
    var writer = Writer(dest);
-
+   writer.writeHeaders();
    return new Promise(function(resolve, reject) {
       walker.on("file", function(root, fileStats, next) {
          var fname = path.join(root, fileStats.name);

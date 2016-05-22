@@ -1,4 +1,6 @@
 
+(function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;
+
 realm.module("test.bridges.User",[],function(){ var $_exports;
 
 
@@ -27,3 +29,5 @@ $_exports = Group;
 
 return $_exports;
 });
+
+})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('realm-js') : self.realm}}(this));
