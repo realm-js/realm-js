@@ -63,7 +63,7 @@ var Writer = function(dest) {
       close: function(isDev) {
          var p = isDev ? "./index.js" : 'realm-js';
          var footer = "\n})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('" + p +
-            "') : self.realm}}(this));";
+            "') : window.realm}}());";
          this.writeAll(footer);
          fs.closeSync(universalFile);
          fs.closeSync(backendFile);
