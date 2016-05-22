@@ -1,5 +1,0 @@
-"use realm";
-
-export class {
-
-}

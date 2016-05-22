@@ -51,11 +51,6 @@ var wrapContents = function(data, isDev) {
    return content.join('');
 }
 
-var transpileRiot = function() {
-   //riot.tag2('ui-base', '<div style="border:1px solid red"><yield></yield></div>', '', '', function(opts) {});
-   //riot.tag2('menu', 'this is my menu <ul><li>Menu1</li><li>Menu2</li></ul>', '', '', function(opts) {});
-}
-
 var transpileString = function(input, opts) {
    opts = opts || {};
    var auto = opts.auto;
