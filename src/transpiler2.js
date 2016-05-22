@@ -2,6 +2,7 @@ var walk = require('walk')
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var mkdirp = require("mkdirp");
 
 var lib = {
    universal: universal,
@@ -16,10 +17,15 @@ function extractModuleName(fname, root) {
    if (name[0] === "/") {
       name = name.slice(1, name.length)
    }
-   return name.replace(/\//, ".");
+
+   name = name.split("/").join('.');
+   return name;
 }
 
 var Writer = function(dest) {
+   if (!fs.existsSync(dest)) {
+      mkdirp.sync(dest)
+   }
    var files = {
       universal: path.join(dest, 'universal.js'),
       backend: path.join(dest, 'backend.js'),
@@ -79,6 +85,20 @@ var universal = function(directory, dest, opts) {
             writer.backend(lib.generator(res));
             return next();
          }
+
+         if (res.type === 'backend-raw') {
+            writer.backend(contents);
+            return next();
+         }
+         if (res.type === 'frontend') {
+            writer.frontend(lib.generator(res));
+            return next();
+         }
+         if (res.type === 'frontend-raw') {
+            writer.frontend(contents);
+            return next();
+         }
+
          if (res.type === 'bridge') {
             writer.frontend(lib.frontendBridgeGenerator(res))
             writer.backend(lib.generator(res));

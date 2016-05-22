@@ -50,7 +50,7 @@ module.exports = function(fileContent, opts) {
       var line = lines[i];
       var skipLine = false;
 
-      var _useRealm = line.match(/^\s*"use realm\s*(backend|bridge)?"/);
+      var _useRealm = line.match(/^\s*"use realm\s*(backend|backend-raw|bridge|frontend|frontend-raw)?"/);
       if (_useRealm) {
          if (_useRealm[1]) {
             moduleType = _useRealm[1];
