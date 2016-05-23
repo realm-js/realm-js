@@ -90,10 +90,11 @@ var gulp = function(directory, target, isDev) {
    function bufferContents(file, enc, cb) {
       var fname = file.path;
       var name = extractModuleName(fname, directory);
-      var res = lib.analyzer(file.contents.toString(), {
+      var fcontents = file.contents.toString();
+      var res = lib.analyzer(fcontents, {
          name: name
       });
-      contents.push(lib.generator(res))
+      contents.push(res.name ? lib.generator(res) : fcontents)
       latestFile = file;
       cb();
    }
