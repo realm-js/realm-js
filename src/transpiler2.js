@@ -3,6 +3,8 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var mkdirp = require("mkdirp");
+var es = require('event-stream');
+var through = require('through2');
 
 var lib = {
    universal: universal,
@@ -20,6 +22,17 @@ function extractModuleName(fname, root) {
 
    name = name.split("/").join('.');
    return name;
+}
+
+function getRealmHeader() {
+   return '(function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;\n';
+}
+
+function getRealmFooter(isDev) {
+   var p = isDev ? "./index.js" : 'realm-js';
+
+   return "\n})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('" + p +
+      "') : window.realm}}());";
 }
 
 var Writer = function(dest) {
@@ -48,8 +61,8 @@ var Writer = function(dest) {
          this.frontend(content);
       },
       writeHeaders: function() {
-         var header = '(function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;\n';
-         this.writeAll(header);
+
+         this.writeAll(getRealmHeader());
       },
       universal: function(contents) {
          fs.writeSync(universalFile, "\n" + contents)
@@ -61,16 +74,43 @@ var Writer = function(dest) {
          fs.writeSync(frontendFile, "\n" + contents)
       },
       close: function(isDev) {
-         var p = isDev ? "./index.js" : 'realm-js';
-         var footer = "\n})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('" + p +
-            "') : window.realm}}());";
-         this.writeAll(footer);
+
+         this.writeAll(getRealmFooter(isDev));
          fs.closeSync(universalFile);
          fs.closeSync(backendFile);
          fs.closeSync(frontendFile);
       }
    }
 }
+
+var gulp = function(directory, target, isDev) {
+   var contents = [getRealmHeader()];
+   var latestFile;
+
+   function bufferContents(file, enc, cb) {
+      var fname = file.path;
+      var name = extractModuleName(fname, directory);
+      var res = lib.analyzer(file.contents.toString(), {
+         name: name
+      });
+      contents.push(lib.generator(res))
+      latestFile = file;
+      cb();
+   }
+
+   function endStream(cb) {
+      var joinedFile = latestFile.clone({
+         contents: false
+      });
+      joinedFile.path = path.join(latestFile.base, target);
+      contents.push(getRealmFooter(isDev))
+      joinedFile.contents = new Buffer(contents.join('\n'));
+      this.push(joinedFile);
+      cb();
+   }
+   return through.obj(bufferContents, endStream);
+}
+
 var universal = function(directory, dest, opts) {
    opts = opts || {};
    var isDev = opts.isDev;
@@ -83,7 +123,6 @@ var universal = function(directory, dest, opts) {
          if (fileStats.name.indexOf(".js") === -1) {
             return next();
          }
-
          var fname = path.join(root, fileStats.name);
          var name = extractModuleName(fname, directory);
          var contents = fs.readFileSync(fname).toString();
@@ -134,4 +173,5 @@ var universal = function(directory, dest, opts) {
 }
 
 lib.universal = universal;
+lib.gulp = gulp;
 module.exports = lib;

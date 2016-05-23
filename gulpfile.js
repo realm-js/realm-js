@@ -45,36 +45,8 @@ gulp.task('start', ['server'], function() {
    });
 });
 
-gulp.task("build-riot", function() {
-   return gulp.src("test-app-riot/**/*.js").pipe(realm.transpiler({
-         preffix: "test",
-         base: "test-app-riot",
-         target: "./test-riot.js"
-      }))
-      .pipe(babel({
-         presets: ["es2016"],
-         plugins: ["transform-decorators-legacy"]
-      }))
-      .pipe(realm.transpiler({
-         wrap: true,
-         dev: true
-      }))
-      .pipe(gulp.dest("./"));
-});
-
-gulp.task("build-backend", function() {
-   return gulp.src("test-app-backend/**/*.js").pipe(realm.transpiler({
-         preffix: "test",
-         base: "test-app-backend",
-         target: "./test-backend.js"
-      }))
-      .pipe(babel({
-         presets: ["es2016"],
-         plugins: ["transform-decorators-legacy"]
-      }))
-      .pipe(realm.transpiler({
-         wrap: true,
-         dev: true
-      }))
-      .pipe(gulp.dest("./"));
+gulp.task('test-gulp', function() {
+   return gulp.src("test-gulp/**/*.js")
+      .pipe(realm.transpiler2.gulp(__dirname + "/test-gulp/", "gulp-build.js"))
+      .pipe(gulp.dest("build/"));
 });
