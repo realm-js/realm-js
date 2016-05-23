@@ -13,7 +13,7 @@ var lib = {
    frontendBridgeGenerator: require('./transpiler/frontendBridgeGenerator.js')
 }
 
-function extractModuleName(fname, root) {
+function extractModuleName(fname, root, preffix) {
    fname = fname.replace(/\.js$/i, '')
    var name = fname.split(root)[1];
    if (name[0] === "/") {
@@ -21,6 +21,9 @@ function extractModuleName(fname, root) {
    }
 
    name = name.split("/").join('.');
+   if (preffix) {
+      name = preffix + "." + name;
+   }
    return name;
 }
 
@@ -83,13 +86,16 @@ var Writer = function(dest) {
    }
 }
 
-var gulp = function(directory, target, isDev) {
+var gulp = function(directory, target, opts) {
+   opts = opts || {};
+   var isDev = opts.isDev;
+   var preffix = opts.preffix;
    var contents = [getRealmHeader()];
    var latestFile;
 
    function bufferContents(file, enc, cb) {
       var fname = file.path;
-      var name = extractModuleName(fname, directory);
+      var name = extractModuleName(fname, directory, preffix);
       var fcontents = file.contents.toString();
       var res = lib.analyzer(fcontents, {
          name: name
