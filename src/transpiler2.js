@@ -80,6 +80,10 @@ var universal = function(directory, dest, opts) {
    writer.writeHeaders();
    return new Promise(function(resolve, reject) {
       walker.on("file", function(root, fileStats, next) {
+         if (fileStats.name.indexOf(".js") === -1) {
+            return next();
+         }
+
          var fname = path.join(root, fileStats.name);
          var name = extractModuleName(fname, directory);
          var contents = fs.readFileSync(fname).toString();
