@@ -45,6 +45,7 @@ module.exports = function(fileContent, opts) {
 
    var modulePath = opts.name || "noname";
    var moduleResult;
+   var decorators = {};
    var waitingExposed = false;
    for (var i in lines) {
       var line = lines[i];
@@ -63,6 +64,11 @@ module.exports = function(fileContent, opts) {
       if ((moduleMatched = line.match(/^\s*module\s+([a-z0-9.$_]+)/i))) {
          modulePath = moduleMatched[1];
          skipLine = true;
+      }
+
+      var decoratorMatched;
+      if ((decoratorMatched = line.match(/\s*@([^\)]+\))/))) {
+         var dname = decoratorMatched[1];
       }
 
       // waiting for exposed method
@@ -133,5 +139,4 @@ module.exports = function(fileContent, opts) {
    return {
       lines: newLines.join('\n')
    }
-
 }

@@ -38,7 +38,9 @@ function getRealmFooter(isDev) {
       "') : window.realm}}());";
 }
 
-var Writer = function(dest) {
+var modifiedFiles = {};
+
+var Writer = function(dest, changes) {
    if (!fs.existsSync(dest)) {
       mkdirp.sync(dest)
    }
@@ -64,16 +66,26 @@ var Writer = function(dest) {
          this.frontend(content);
       },
       writeHeaders: function() {
-
          this.writeAll(getRealmHeader());
       },
-      universal: function(contents) {
+      universal: function(contents, isModified) {
+         if (isModified) {
+            changes.backend = true;
+            changes.frontend = true;
+         }
          fs.writeSync(universalFile, "\n" + contents)
       },
-      backend: function(contents) {
+      backend: function(contents, isModified) {
+         if (isModified) {
+            changes.backend = true;
+         }
+
          fs.writeSync(backendFile, "\n" + contents)
       },
-      frontend: function(contents) {
+      frontend: function(contents, isModified) {
+         if (isModified) {
+            changes.frontend = true;
+         }
          fs.writeSync(frontendFile, "\n" + contents)
       },
       close: function(isDev) {
@@ -100,6 +112,7 @@ var gulp = function(directory, target, opts) {
       var res = lib.analyzer(fcontents, {
          name: name
       });
+
       contents.push(res.name ? lib.generator(res) : fcontents)
       latestFile = file;
       cb();
@@ -121,16 +134,18 @@ var gulp = function(directory, target, opts) {
 var universal = function(directory, dest, opts) {
    opts = opts || {};
    var isDev = opts.isDev;
-
+   var changes = {};
    var walker = walk.walk(directory);
-   var writer = Writer(dest);
+   var writer = Writer(dest, changes);
    writer.writeHeaders();
+
    return new Promise(function(resolve, reject) {
       walker.on("file", function(root, fileStats, next) {
          if (fileStats.name.indexOf(".js") === -1) {
             return next();
          }
          var fname = path.join(root, fileStats.name);
+
          var name = extractModuleName(fname, directory);
          var contents = fs.readFileSync(fname).toString();
 
@@ -138,43 +153,50 @@ var universal = function(directory, dest, opts) {
             name: name
          });
 
+         var isModified = modifiedFiles[fname] !== fileStats.mtime.getTime();
+
+         modifiedFiles[fname] = fileStats.mtime.getTime();
+
          // A file without realm "use case"
          if (!res.name) {
-            writer.universal(contents);
+            writer.universal(contents, isModified);
             return next();
          }
          if (res.type === 'universal') {
-            writer.universal(lib.generator(res));
+
+            writer.universal(lib.generator(res), isModified);
             return next();
          }
          if (res.type === 'backend') {
-            writer.backend(lib.generator(res));
+            writer.backend(lib.generator(res), isModified);
             return next();
          }
 
          if (res.type === 'backend-raw') {
-            writer.backend(contents);
+            writer.backend(contents, isModified);
             return next();
          }
          if (res.type === 'frontend') {
-            writer.frontend(lib.generator(res));
+
+            writer.frontend(lib.generator(res), isModified);
             return next();
          }
          if (res.type === 'frontend-raw') {
-            writer.frontend(contents);
+            writer.frontend(contents, isModified);
             return next();
          }
 
          if (res.type === 'bridge') {
-            writer.frontend(lib.frontendBridgeGenerator(res))
-            writer.backend(lib.generator(res));
+            writer.frontend(lib.frontendBridgeGenerator(res), isModified)
+            writer.backend(lib.generator(res), isModified);
             return next();
          }
+
       });
 
       walker.on("end", function() {
          writer.close();
-         return resolve();
+         return resolve(changes);
       });
    });
 }

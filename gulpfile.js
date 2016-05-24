@@ -45,6 +45,19 @@ gulp.task('start', ['server'], function() {
    });
 });
 
+gulp.task('build-universal', function() {
+   return realm.transpiler2.universal(__dirname + "/test-universal/", "test_build/")
+});
+
+gulp.task('watch', function() {
+   gulp.watch(['test-universal/**/*.js'], function() {
+      realm.transpiler2
+         .universal(__dirname + "/test-universal/", "test_build/").then(function(modified) {
+            console.log(modified)
+         })
+   });
+});
+
 gulp.task('test-gulp', function() {
    return gulp.src("test-gulp/**/*.js")
       .pipe(realm.transpiler2.gulp(__dirname + "/test-gulp/", "gulp-build.js"))
