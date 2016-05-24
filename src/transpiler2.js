@@ -40,64 +40,6 @@ function getRealmFooter(isDev) {
 
 var modifiedFiles = {};
 
-var Writer = function(dest, changes) {
-   if (!fs.existsSync(dest)) {
-      mkdirp.sync(dest)
-   }
-   var files = {
-      universal: path.join(dest, 'universal.js'),
-      backend: path.join(dest, 'backend.js'),
-      frontend: path.join(dest, 'frontend.js')
-   }
-   _.each(files, function(file) {
-      if (fs.existsSync(file)) {
-         fs.unlinkSync(file);
-      }
-   });
-   var universalFile = fs.openSync(files.universal, 'a');
-   var backendFile = fs.openSync(files.backend, 'a');
-   var frontendFile = fs.openSync(files.frontend, 'a');
-   // writing headers
-
-   return {
-      writeAll: function(content) {
-         this.universal(content);
-         this.backend(content);
-         this.frontend(content);
-      },
-      writeHeaders: function() {
-         this.writeAll(getRealmHeader());
-      },
-      universal: function(contents, isModified) {
-         if (isModified) {
-            changes.backend = true;
-            changes.frontend = true;
-         }
-         fs.writeSync(universalFile, "\n" + contents)
-      },
-      backend: function(contents, isModified) {
-         if (isModified) {
-            changes.backend = true;
-         }
-
-         fs.writeSync(backendFile, "\n" + contents)
-      },
-      frontend: function(contents, isModified) {
-         if (isModified) {
-            changes.frontend = true;
-         }
-         fs.writeSync(frontendFile, "\n" + contents)
-      },
-      close: function(isDev) {
-
-         this.writeAll(getRealmFooter(isDev));
-         fs.closeSync(universalFile);
-         fs.closeSync(backendFile);
-         fs.closeSync(frontendFile);
-      }
-   }
-}
-
 var gulp = function(directory, target, opts) {
    opts = opts || {};
    var isDev = opts.isDev;
@@ -136,9 +78,17 @@ var universal = function(directory, dest, opts) {
    var isDev = opts.isDev;
    var changes = {};
    var walker = walk.walk(directory);
-   var writer = Writer(dest, changes);
-   writer.writeHeaders();
 
+   var files = {
+      universal: path.join(dest, 'universal.js'),
+      backend: path.join(dest, 'backend.js'),
+      frontend: path.join(dest, 'frontend.js')
+   }
+   var data = {
+      universal: [],
+      backend: [],
+      frontend: []
+   };
    return new Promise(function(resolve, reject) {
       walker.on("file", function(root, fileStats, next) {
          if (fileStats.name.indexOf(".js") === -1) {
@@ -159,43 +109,68 @@ var universal = function(directory, dest, opts) {
 
          // A file without realm "use case"
          if (!res.name) {
-            writer.universal(contents, isModified);
+            data.universal.push(contents);
+            if (isModified) {
+               changes.universal = true;
+            }
             return next();
          }
          if (res.type === 'universal') {
-
-            writer.universal(lib.generator(res), isModified);
+            data.universal.push(lib.generator(res))
+            if (isModified) {
+               changes.universal = true;
+            }
             return next();
          }
          if (res.type === 'backend') {
-            writer.backend(lib.generator(res), isModified);
+            data.backend.push(lib.generator(res));
+            if (isModified) {
+               changes.backend = true;
+            }
             return next();
          }
 
          if (res.type === 'backend-raw') {
-            writer.backend(contents, isModified);
+            if (isModified) {
+               changes.backend = true;
+            }
+            data.backend.push(contents);
             return next();
          }
          if (res.type === 'frontend') {
-
-            writer.frontend(lib.generator(res), isModified);
+            if (isModified) {
+               changes.frontend = true;
+            }
+            data.frontend.push(lib.generator(res));
             return next();
          }
          if (res.type === 'frontend-raw') {
-            writer.frontend(contents, isModified);
+            if (isModified) {
+               changes.frontend = true;
+            }
+            data.frontend.push(contents);
             return next();
          }
-
          if (res.type === 'bridge') {
-            writer.frontend(lib.frontendBridgeGenerator(res), isModified)
-            writer.backend(lib.generator(res), isModified);
+            if (isModified) {
+               changes.frontend = true;
+               changes.backend = true;
+            }
+            data.frontend.push(lib.frontendBridgeGenerator(res));
+            data.backend.push(lib.generator(res));
             return next();
          }
-
       });
-
       walker.on("end", function() {
-         writer.close();
+         if (changes.backend) {
+            fs.writeFileSync(files.backend, data.backend.join('\n'));
+         }
+         if (changes.frontend) {
+            fs.writeFileSync(files.frontend, data.frontend.join('\n'));
+         }
+         if (changes.universal) {
+            fs.writeFileSync(files.universal, data.universal.join('\n'));
+         }
          return resolve(changes);
       });
    });

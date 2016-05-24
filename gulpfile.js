@@ -46,7 +46,9 @@ gulp.task('start', ['server'], function() {
 });
 
 gulp.task('build-universal', function() {
-   return realm.transpiler2.universal(__dirname + "/test-universal/", "test_build/")
+   return realm.transpiler2.universal(__dirname + "/test-universal/", "test_build/").then(function(changes) {
+      console.log(changes)
+   })
 });
 
 gulp.task('watch', function() {

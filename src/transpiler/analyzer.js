@@ -45,8 +45,10 @@ module.exports = function(fileContent, opts) {
 
    var modulePath = opts.name || "noname";
    var moduleResult;
-   var decorators = {};
+   var rogueDecorators = [];
+   var decorators = [];
    var waitingExposed = false;
+   var currentClass;
    for (var i in lines) {
       var line = lines[i];
       var skipLine = false;
@@ -66,9 +68,42 @@ module.exports = function(fileContent, opts) {
          skipLine = true;
       }
 
+      if (currentClass) {
+         if (rogueDecorators.length > 0) {
+            var methodMatched;
+            if ((methodMatched = line.match(/^\s*(static\s*)?([a-z0-9$_]+)/i))) {
+               var method = methodMatched[2];
+               _.each(rogueDecorators, function(d) {
+                  decorators.push({
+                     cls: currentClass,
+                     method: method,
+                     decorator: d
+                  })
+               });
+               rogueDecorators = [];
+            }
+         }
+
+      }
+      // process classes and decorators
+      var classMatched;
+      if ((classMatched = line.match(/(([^\s]+)\s*=\s*)?(\s*)class\s*([^\s]+)/i))) {
+         currentClass = classMatched[2] || classMatched[4];
+         if (rogueDecorators.length) {
+            _.each(rogueDecorators, function(d) {
+               decorators.push({
+                  cls: currentClass,
+                  decorator: d
+               })
+            });
+            rogueDecorators = [];
+         }
+      }
+
       var decoratorMatched;
-      if ((decoratorMatched = line.match(/\s*@([^\)]+\))/))) {
-         var dname = decoratorMatched[1];
+      if ((decoratorMatched = line.match(/^\s*@([^\)]+\))/))) {
+         rogueDecorators.push(decoratorMatched[1]);
+         skipLine = true;
       }
 
       // waiting for exposed method
@@ -121,11 +156,15 @@ module.exports = function(fileContent, opts) {
    }
 
    if (useRealm) {
+
       var annotations = _.map(injections, function(item) {
          return '"' + (item.packageName ? item.packageName + "." : '') + item.name + '"';
       });
       var moduleNames = _.map(injections, function(item) {
          return item.alias;
+      });
+      _.each(decorators, function(decorator) {
+         newLines.push(decorator.decorator + '(' + decorator.cls + ',' + (decorator.method ? '"' + decorator.method + '"' : 'undefined') + ');');
       });
       return {
          name: modulePath,
