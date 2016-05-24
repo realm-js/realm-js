@@ -146,7 +146,7 @@ var universal = function(directory, dest, opts) {
          }
          var fname = path.join(root, fileStats.name);
 
-         var name = extractModuleName(fname, directory);
+         var name = extractModuleName(fname, directory, opts.preffix);
          var contents = fs.readFileSync(fname).toString();
 
          var res = lib.analyzer(contents, {
