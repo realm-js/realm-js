@@ -138,6 +138,13 @@
       service: function() {
          this.register.apply(this, arguments);
       },
+      start: function(moduleName) {
+         return Realm.require(moduleName, function(target) {
+            if (target && _.isFunction(target.main)) {
+               target.main();
+            }
+         });
+      },
       module: function(name, func, opts) {
          opts = opts || {};
          opts.cache = true;
