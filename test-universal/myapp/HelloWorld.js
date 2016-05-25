@@ -1,18 +1,8 @@
 "use realm"
 
-@pukka()
-   /*
-   My commment
-   */
 class HelloWorld {
-
-   @sukka();
-   @sukka2(2)
+   @permission();
    somethingHere() {
-
-   }
-   @permission()
-   static somethingElse() {
 
    }
 }

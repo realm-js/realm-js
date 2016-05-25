@@ -1,8 +1,17 @@
 # realm-js
-RealmJs is a new dependency injection/module handling tool for Node.js and javascript projects. The library is universal (isomorphic). You can easily share modules between frontend and backend accordingly.
+RealmJs is a brand new universal transpiler with built-in dependency injection.
 
-## Introduction
-Real.js comes with an absolutely superb transpiler, which resembles es6 imports. It essentially has the same syntax with few improvements
+# Features
+   * 100% Universal
+   * Improved import system - Packages, aliases
+   * Promise based
+   * EC7 friendly - decorators
+   * Automatic environment separation (backend, frontend, universal)
+   * Backend encapsulation / Bridges
+   * Extremely fast compilation (50-70ms) to transpile a big project
+
+
+## Usage
 
 ```js
 "use realm";
@@ -26,7 +35,79 @@ realm.module("test.MySuperClass", ["myapp.myModule", "myapp.utils.lodash"], func
 });
 ```
 
-Add babel7 and your are unstoppable!
+
+## Header types
+
+Univeral mode. File will be put into universal.js
+```js
+"use realm";
+```
+
+Frontend mode. File will be put into frontend.js
+```js
+"use realm frontend";
+```
+
+Frontend mode without wrapping. File will be put into frontend.js
+```js
+"use realm frontend-raw";
+```
+
+
+Backend mode. File will be put into backend.js
+```js
+"use realm backend";
+```
+
+Backend mode without wrapping. File will be put into backend.js
+```js
+"use realm backend-raw";
+```
+
+Bridge mode, the source will be put into backend.js, interface into frontend.js
+```js
+"use realm bridge";
+```
+
+## Using Bridges
+Sometimes you need to have your code encapsulated. Say, secured calls involving authentication;
+In this case, bridge most is the most suitable case.
+
+Before proceeding, you need to install realm-router (it will actually proxy frontend requests)
+Set up you express application like so:
+
+```js
+var router = require("realm-router");
+realm.require('realm.router.Express', function(router) {
+   app.use(router(["realm.router.bridge"]))
+})
+```
+
+Include realm-router frontend build to your html file. And start bridging!
+
+```js
+"use realm bridge";
+class Auth {
+   static login()
+   {
+
+   }
+}
+export Auth
+```
+Remember that only static methods are exposed.
+
+
+
+## Transpiler
+Universal transpiler will output 3 files: backend, frontend, universal
+```js
+gulp.task('build-universal', function() {
+   return realm.transpiler2.universal(__dirname + "/test-universal/", "test_build/").then(function(changes) {
+      console.log(changes)
+   })
+});
+```
 
 
 ### Install
@@ -34,22 +115,10 @@ Add babel7 and your are unstoppable!
 npm install realm-js --save
 ```
 
-Check a simple [project](test-app-backend) and see what it compiles into [test-backend.js](test-backend.js) (with a little help from babel es7)
-
-If you want to serve realm.js you can just use express middleware
-
-```js
-app.use('/ream.js', realm.serve.express());
-```
-To get contents (for build)
-```js
-realm.serve.getContents()
-```
-
 ## Under the hood
 
+You can use realm-js without transpiler
 ### Creating modules/services
-Everything revolves around es6 promises:
 ```js
 realm.module("MyFirstModule", function() {
    return new Promise(function(resolve, reject){
@@ -91,24 +160,6 @@ realm.module("myModule", ["moduleA", "moduleB"], function(moduleA, moduleB){
 })
 ```
 
-## Porting your favorite libraries
-Universal wrapper has a parameter called $isBackend.
-So, if you want to import lodash (my favorite) or any other libaries. you can register them like so:
-
-```js
-domain.module("shared._", function() {
-   return $isBackend ? require("lodash") : window._;
-});
-domain.module("shared.realm", function() {
-   return $isBackend ? require("realm-js") : window.realm;
-});
-
-```
-
-## Using the realm transpiler
-
-The current transpiler is a very simple regExp like script. (I am not sure if i can call transpiler though).
-I have been using this library for years, and decided to release just now. I've tried to create a babel plugin, but this thing is just ginormous and i simply don't have time for that. If you feel like, go ahead!
 
 ### A simple import
 If a module does not belong to any package:
@@ -126,42 +177,8 @@ Giving it alias
 import Module as mod from app
 ```
 
-
-### Gulp
+Explicit module name (not recommended)
 ```js
-realm.transpiler({
-      preffix: "test",
-      base : "test-app-backend",
-      target : "./test-backend.js"
-})
 ```
-
-Wrapping into a universal function
-```js
-realm.transpiler({wrap : true})
-```
-
-## Bulding
-
-You can use babel to transpile your code into anything you like. (RealmJs transpiler should come first)
-
-Here is a sample build task;
-
-```js
-gulp.task("build-backend", function() {
-   return gulp.src("test-app-backend/**/*.js").pipe(realm.transpiler({
-         preffix: "test",
-         base : "test-app-backend",
-         target : "./test-backend.js"
-      }))
-      .pipe(babel({
-         presets: ["es2016"],
-         plugins: ["transform-decorators-legacy"]
-      }))
-      .pipe(realm.transpiler({wrap : true}))
-      .pipe(gulp.dest("./"));
-});
-```
-
 ## Contribute
 Please, contribute. The code isn't in its best shape but rocks!

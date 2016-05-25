@@ -13,13 +13,22 @@ var lib = {
    frontendBridgeGenerator: require('./transpiler/frontendBridgeGenerator.js')
 }
 
+/**
+ * extractModuleName - Extracting realn module name
+ * Getting rid of extension, replacing / with .
+ * If preffix is set, add it there
+ *
+ * @param  {type} fname   description
+ * @param  {type} root    description
+ * @param  {type} preffix description
+ * @return {type}         description
+ */
 function extractModuleName(fname, root, preffix) {
    fname = fname.replace(/\.js$/i, '')
    var name = fname.split(root)[1];
    if (name[0] === "/") {
       name = name.slice(1, name.length)
    }
-
    name = name.split("/").join('.');
    if (preffix) {
       name = preffix + "." + name;
@@ -28,12 +37,11 @@ function extractModuleName(fname, root, preffix) {
 }
 
 function getRealmHeader() {
-   return '(function(___scope___) { var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;\n';
+   return '(function(___scope___) { "use strict"; var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;\n';
 }
 
 function getRealmFooter(isDev) {
    var p = isDev ? "./index.js" : 'realm-js';
-
    return "\n})(function(self){ var isNode = typeof exports !== 'undefined'; return { isNode : isNode, realm : isNode ? require('" + p +
       "') : window.realm}}());";
 }
@@ -78,7 +86,7 @@ var universal = function(directory, dest, opts) {
    var isDev = opts.isDev;
    var changes = {};
    var walker = walk.walk(directory);
-
+   var preffix = opts.preffix;
    var files = {
       universal: path.join(dest, 'universal.js'),
       backend: path.join(dest, 'backend.js'),
@@ -96,15 +104,15 @@ var universal = function(directory, dest, opts) {
          }
          var fname = path.join(root, fileStats.name);
 
-         var name = extractModuleName(fname, directory, opts.preffix);
+         // extracting real module name
+         var name = extractModuleName(fname, directory, preffix);
          var contents = fs.readFileSync(fname).toString();
-
          var res = lib.analyzer(contents, {
             name: name
          });
 
+         // check if this file has been modified
          var isModified = modifiedFiles[fname] !== fileStats.mtime.getTime();
-
          modifiedFiles[fname] = fileStats.mtime.getTime();
 
          // A file without realm "use case"
@@ -162,14 +170,17 @@ var universal = function(directory, dest, opts) {
          }
       });
       walker.on("end", function() {
+         var wrap = function(cnt) {
+            return getRealmHeader() + "\n" + cnt.join('\n') + "\n" + getRealmFooter(isDev);
+         }
          if (changes.backend) {
-            fs.writeFileSync(files.backend, data.backend.join('\n'));
+            fs.writeFileSync(files.backend, wrap(data.backend));
          }
          if (changes.frontend) {
-            fs.writeFileSync(files.frontend, data.frontend.join('\n'));
+            fs.writeFileSync(files.frontend, wrap(data.frontend));
          }
          if (changes.universal) {
-            fs.writeFileSync(files.universal, data.universal.join('\n'));
+            fs.writeFileSync(files.universal, wrap(data.universal));
          }
          return resolve(changes);
       });
