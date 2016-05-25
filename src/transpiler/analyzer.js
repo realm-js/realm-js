@@ -101,7 +101,7 @@ module.exports = function(fileContent, opts) {
       }
 
       var decoratorMatched;
-      if ((decoratorMatched = line.match(/^\s*@([^\)]+\))/))) {
+      if ((decoratorMatched = line.match(/^\s*@([a-z0-9]+\(.*)$/i))) {
          rogueDecorators.push(decoratorMatched[1]);
          skipLine = true;
       }
