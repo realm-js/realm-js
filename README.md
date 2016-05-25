@@ -10,7 +10,7 @@ RealmJs is a brand new universal transpiler with built-in dependency injection.
    * Backend encapsulation / Bridges
    * Extremely fast compilation (50-70ms) to transpile a big project
 
-(TRY IT NOW)[https://github.com/realm-js/universal-app-example]. It's worth it!
+[TRY IT NOW](https://github.com/realm-js/universal-app-example) It's worth it!
 
 ## Usage
 
