@@ -10,31 +10,25 @@ RealmJs is a brand new universal transpiler with built-in dependency injection.
    * Backend encapsulation / Bridges
    * Extremely fast compilation (50-70ms) to transpile a big project
 
+(TRY IT NOW)[https://github.com/realm-js/universal-app-example]. It's worth it!
 
 ## Usage
 
 ```js
 "use realm";
 
-import myModule from myapp;
-import lodash as _ from myapp.utils;
+import FeedParser, GoogleFeed from app.blogs;
 
-class MySuperClass {
-
-}
-export MySuperClass;
-```
-
-Realm transpiler goes through files and converts, say MySuperClass.js file into
-```js
-realm.module("test.MySuperClass", ["myapp.myModule", "myapp.utils.lodash"], function (myModule, _) {
-   class MySuperClass {
-
+class Application {
+   static main() {
+      GoogleFeed.getFeed("Official Google Blogs").then(function(entries) {
+         var entries = FeedParser.getEntries(entries);
+         console.log(entries);
+      });
    }
-  return MySuperClass;
-});
+}
+export Application;
 ```
-
 
 ## Try it now!
 Don't waste your time, try bridging now! Isomorphism is right here!
