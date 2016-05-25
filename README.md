@@ -40,7 +40,7 @@ realm.module("test.MySuperClass", ["myapp.myModule", "myapp.utils.lodash"], func
 Don't waste your time, try bridging now! Isomorphism is right here!
 
 ```js
-git@github.com:realm-js/universal-app-example.git
+git clone git@github.com:realm-js/universal-app-example.git
 cd universal-app-example
 npm install
 gulp start
