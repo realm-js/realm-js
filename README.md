@@ -51,6 +51,20 @@ Then try!
 ```js
 node test.js
 ```
+
+This code is 100% universal with backend encapsulation
+The implementation of [app.blogs.GoogleFeed](https://github.com/realm-js/universal-app-example/blob/master/src/app/blogs/GoogleFeed.js) in our case is hidden from endusers, however interfaces are introduced.  
+
+```html
+<body>
+   <script>
+   // Starting our application
+   realm.start('app.Application');
+</script>
+</body>
+```
+
+</body>
 ## Header types
 
 Univeral mode. File will be put into universal.js
