@@ -42,13 +42,13 @@ module.exports = function(fileContent, opts) {
    var useRealm = false;
    var moduleType = 'universal';
    var exposed = [];
-
    var modulePath = opts.name || "noname";
    var moduleResult;
    var rogueDecorators = [];
    var decorators = [];
    var waitingExposed = false;
    var currentClass;
+   var realmType = 'module';
    for (var i in lines) {
       var line = lines[i];
       var skipLine = false;
@@ -63,8 +63,9 @@ module.exports = function(fileContent, opts) {
       }
       // custom module name
       var moduleMatched;
-      if ((moduleMatched = line.match(/^\s*module\s+([a-z0-9.$_]+)/i))) {
-         modulePath = moduleMatched[1];
+      if ((moduleMatched = line.match(/^\s*(module|service)\s+([a-z0-9.$_]+)/i))) {
+         modulePath = moduleMatched[2];
+         realmType = moduleMatched[1]
          skipLine = true;
       }
 
@@ -168,6 +169,7 @@ module.exports = function(fileContent, opts) {
       });
       return {
          name: modulePath,
+         realmType: realmType,
          type: moduleType,
          exposed: exposed,
          annotations: annotations,
