@@ -36,6 +36,20 @@ realm.module("test.MySuperClass", ["myapp.myModule", "myapp.utils.lodash"], func
 ```
 
 
+## Try it now!
+Don't waste your time, try it now
+
+```js
+git@github.com:realm-js/universal-app-example.git
+cd universal-app-example
+npm install
+gulp start
+```
+Visit http://localhost:3055/ and check the console! 
+and then launch:
+```js
+node test.js
+```
 ## Header types
 
 Univeral mode. File will be put into universal.js
