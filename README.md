@@ -46,7 +46,8 @@ npm install
 gulp start
 ```
 Visit http://localhost:3055/ and check the console! 
-and then launch:
+
+Then try!
 ```js
 node test.js
 ```
