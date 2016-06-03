@@ -94,7 +94,7 @@ Bridge mode, the source will be put into backend.js, interface into frontend.js
 
 ## Using Bridges
 Sometimes you need to have your code encapsulated. Say, secured calls involving authentication;
-In this case, bridge most is the most suitable case.
+In this case, bridge is the most suitable case.
 
 Before proceeding, you need to install realm-router (it will actually proxy frontend requests)
 Set up you express application like so:
@@ -106,7 +106,7 @@ realm.require('realm.router.Express', function(router) {
 })
 ```
 
-Include realm-router frontend build to your html file. And start bridging!
+Include realm-router frontend build file into your html file. And start bridging!
 
 ```js
 "use realm bridge";
