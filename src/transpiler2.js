@@ -187,6 +187,10 @@ var universal = function(directory, dest, opts) {
    });
 }
 
+lib.wrapContents = function(data, isDev) {
+   return getRealmHeader() + "\n" + data + "\n" + getRealmFooter(isDev);
+}
+
 lib.universal = universal;
 lib.gulp = gulp;
 module.exports = lib;

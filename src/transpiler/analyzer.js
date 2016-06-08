@@ -88,7 +88,7 @@ module.exports = function(fileContent, opts) {
       }
       // process classes and decorators
       var classMatched;
-      if ((classMatched = line.match(/(([^\s]+)\s*=\s*)?(\s*)class\s*([a-z0-9$_]+)/i))) {
+      if ((classMatched = line.match(/(([^\s]+)\s*=\s*)?(\s*)class\s+([a-z0-9$_]+)/i))) {
          currentClass = classMatched[2] || classMatched[4];
          if (rogueDecorators.length) {
             _.each(rogueDecorators, function(d) {
