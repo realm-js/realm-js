@@ -34,28 +34,10 @@ export Application;
 Don't waste your time, try bridging now! Isomorphism is right here!
 
 ```js
-git clone git@github.com:realm-js/universal-app-example.git
-cd universal-app-example
+git clone git@github.com:realm-js/realm-riot-example.git
+cd realm-riot-example
 npm install
 gulp start
-```
-Visit http://localhost:3055/ and check the console!
-
-Then try!
-```js
-node test.js
-```
-
-This code is 100% universal with backend encapsulation
-The implementation of [app.blogs.GoogleFeed](https://github.com/realm-js/universal-app-example/blob/master/src/app/blogs/GoogleFeed.js) in our case is hidden from endusers, however interfaces are introduced.  
-
-```html
-<body>
-   <script>
-   // Starting our application
-   realm.start('app.Application');
-</script>
-</body>
 ```
 
 </body>
