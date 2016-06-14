@@ -10,8 +10,6 @@ RealmJs is a brand new universal transpiler with built-in dependency injection.
    * Backend encapsulation / Bridges
    * Extremely fast compilation (50-70ms) to transpile a big project
 
-[TRY IT NOW](https://github.com/realm-js/universal-app-example) It's worth it!
-
 ## Usage
 
 ```js
@@ -37,6 +35,7 @@ git clone git@github.com:realm-js/realm-riot-example.git
 cd realm-riot-example
 gulp start
 ```
+ToDo service is isolated. Frontend can access the interface, however code per se is hidden from the end users.
 
 </body>
 ## Header types
