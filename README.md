@@ -31,12 +31,10 @@ export Application;
 ```
 
 ## Try it now!
-Don't waste your time, try bridging now! Isomorphism is right here!
 
 ```js
 git clone git@github.com:realm-js/realm-riot-example.git
 cd realm-riot-example
-npm install
 gulp start
 ```
 
