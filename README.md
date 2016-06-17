@@ -10,8 +10,6 @@ RealmJs is a brand new universal transpiler with built-in dependency injection.
    * Backend encapsulation / Bridges
    * Extremely fast compilation (50-70ms) to transpile a big project
 
-[TRY IT NOW](https://github.com/realm-js/universal-app-example) It's worth it!
-
 ## Usage
 
 ```js
@@ -31,32 +29,13 @@ export Application;
 ```
 
 ## Try it now!
-Don't waste your time, try bridging now! Isomorphism is right here!
 
 ```js
-git clone git@github.com:realm-js/universal-app-example.git
-cd universal-app-example
-npm install
+git clone git@github.com:realm-js/realm-riot-example.git
+cd realm-riot-example
 gulp start
 ```
-Visit http://localhost:3055/ and check the console!
-
-Then try!
-```js
-node test.js
-```
-
-This code is 100% universal with backend encapsulation
-The implementation of [app.blogs.GoogleFeed](https://github.com/realm-js/universal-app-example/blob/master/src/app/blogs/GoogleFeed.js) in our case is hidden from endusers, however interfaces are introduced.  
-
-```html
-<body>
-   <script>
-   // Starting our application
-   realm.start('app.Application');
-</script>
-</body>
-```
+ToDo service is isolated. Frontend can access the interface, however code per se is hidden from the end users.
 
 </body>
 ## Header types
