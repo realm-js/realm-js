@@ -88,10 +88,12 @@ var universal = function(directory, dest, opts) {
    var walker = walk.walk(directory);
    var preffix = opts.preffix;
    var files = {
-      universal: path.join(dest, 'universal.js'),
-      backend: path.join(dest, 'backend.js'),
-      frontend: path.join(dest, 'frontend.js')
-   }
+         universal: path.join(dest, 'universal.js'),
+         backend: path.join(dest, 'backend.js'),
+         frontend: path.join(dest, 'frontend.js')
+      }
+      // Creating directory
+   mkdirp.sync(dest)
    var data = {
       universal: [],
       backend: [],
