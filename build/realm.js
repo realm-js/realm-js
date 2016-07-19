@@ -133,8 +133,36 @@
          iterate();
       });
    }
+
+   // Eval flow
+   var evaluateFlow = function(fn, scope) {
+      var result = fn(scope);
+      if (result && _.isFunction(result.then)) {
+         return result.then(function(result) {
+            _.merge(scope, result);
+            return scope;
+         });
+      }
+      if (_.isPlainObject(result)) {
+         _.merge(scope, result);
+      }
+      return scope;
+   }
+   var MergePromises = function() {
+      var scope = {};
+      var data = _.flatten(arguments);
+      return domainEach(data, function(step) {
+         if (_.isFunction(step)) {
+            return evaluateFlow(step, scope);
+         }
+      }).then(function() {
+         return scope;
+      });
+   }
+
    var Realm = {
       each: domainEach,
+      merge: MergePromises,
       service: function() {
          this.register.apply(this, arguments);
       },
