@@ -1,5 +1,9 @@
-# realm-js
-RealmJs is a brand new universal transpiler with built-in dependency injection.
+# Realm-js
+
+Imagine js imports on steroids! *Realm-js* respects promises, super fast as transpiling, supports aliases and runs in an isolated universal environment.
+
+
+![Coding](coding.gif)
 
 # Features
    * 100% Universal
