@@ -190,4 +190,4 @@ Explicit module name (not recommended)
 ```js
 ```
 ## Contribute
-Please, contribute. The code isn't in its best shape but rocks!
+Please, contribute!
