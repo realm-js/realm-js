@@ -1,0 +1,2 @@
+"use realm";
+export MyClass {}

@@ -2,9 +2,9 @@ var should = require('should');
 var realm = require('../index.js');
 var Promise = require("promise");
 
-describe('Realm flow', function() {
+describe('Realm merge', function() {
 
-   it('Should pass the flow', function(done) {
+   it('Should pass merge', function(done) {
       var doFirst = function() {
          return {
             hello: 1
