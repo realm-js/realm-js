@@ -189,5 +189,96 @@ import Module as mod from app
 Explicit module name (not recommended)
 ```js
 ```
+
+
+## Dealing with promises
+
+Realm-js has a set of functionality that helps solving many problems or impediments related to Promises
+
+### Each
+Iterates a list of promises (objects) consecutively. Respects promises if provided
+```js
+var a = [1, 2, 3];
+realm.each(a, function(num){
+  return new Promise((resolve, reject) => {
+    setTimeout(function(){
+      return resolve(num++)
+    }, num);
+  })
+}).then(function(result){
+   // [2,3,4]
+});
+```
+
+And another example with optional Promise
+```js
+realm.each(a, function(num){
+  if( num ===3) {
+    return new Promise((resolve, reject) => {
+      setTimeout(function(){
+        return resolve("gotcha")
+      }, 1);
+    })
+  }
+  return num;
+}).then(function(result){
+  // [1, 2, "gotcha"]
+})
+```
+
+### Chains
+
+Chain are very helpful when you have a logic flow, and you need to split it up, and keep you code clean.
+```js
+class MyChain {
+   setFoo() {
+      return "foo1";
+   }
+   setBar() {
+      // Already here this.foo is available ("foo1")
+      return "bar1";
+   }
+   justSomethingFunky()
+   {
+     let self = this;
+     // I am still executed! But not assigned
+     return new Promise(function(resolve, reject){
+        // Everyone will wait for me!
+        return resolve(self.bar)
+     })
+   }
+   setHello()
+   {
+      return "world";
+   }
+}
+realm.chain(MyChain).then(function(result){
+   // {foo : "foo1", bar : "bar1", hello: "world" }   
+});
+```
+
+Executes methods in defined order. If a setter is defined, realm will assign the result into the instance of a class.
+
+You can format the output as well
+```js
+class MyChain {
+   setFoo() {
+      return "foo1";
+   }
+   setBar() {
+      // I am still executed
+      return "bar1";
+   }
+   format()
+   {
+      return {
+        hello : this.foo
+      }
+   }
+}
+realm.chain(MyChain).then(function(result){
+     // {hello : "foo1" }   
+});
+```
 ## Contribute
 Please, contribute!
