@@ -27,4 +27,8 @@ realm.module("realm.utils.swig", function() {
    return require('swig');
 });
 
+realm.module("realm.utils.path", function() {
+   return require('path');
+});
+
 module.exports = realm;
