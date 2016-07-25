@@ -2,6 +2,7 @@
 
 Imagine js imports on steroids! *Realm-js* respects promises, super fast as transpiling, supports aliases and runs in an isolated universal environment.
 
+[READ THIS MEDIUM POST TO DIVE IN](https://medium.com/@ivanorlov/universal-bridging-1e3a08015a44)
 
 ![Coding](coding.gif)
 
@@ -15,6 +16,8 @@ Imagine js imports on steroids! *Realm-js* respects promises, super fast as tran
    * Extremely fast compilation (50-70ms) to transpile a big project
 
 ## Usage
+
+
 
 ```js
 "use realm";
@@ -33,7 +36,7 @@ export Application;
 ```
 
 
-[Medium Post](https://medium.com/@ivanorlov/universal-bridging-1e3a08015a44)
+
 ## Try it now!
 
 ```bash
