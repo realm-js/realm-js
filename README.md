@@ -229,19 +229,23 @@ realm.each(a, function(num){
 ### Chains
 
 Chain are very helpful when you have a logic flow, and you need to split it up, and keep you code clean.
+All methods are executed in strict order. You can call it a waterfall. 
 ```js
 class MyChain {
+   
    setFoo() {
+      // I execute and set this.foo = "foo1"  automatically.
       return "foo1";
    }
    setBar() {
       // Already here this.foo is available ("foo1")
+      // I execute and set this.bar = "foo1"  automatically.
       return "bar1";
    }
    justSomethingFunky()
    {
      let self = this;
-     // I am still executed! But not assigned
+     // I am still executed! But i am not assigning anything
      return new Promise(function(resolve, reject){
         // Everyone will wait for me!
         return resolve(self.bar)
@@ -249,6 +253,7 @@ class MyChain {
    }
    setHello()
    {
+      // I am the last to be executed, and i will assign this.hello = "world"
       return "world";
    }
 }
