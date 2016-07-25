@@ -160,8 +160,77 @@
       });
    }
 
+   var Chain = function(cls) {
+      return new Promise(function(resolve, reject) {
+
+         if (!_.isObject(cls)) {
+            return reject({
+               status: 500,
+               message: "Argument must be a class!"
+            });
+         }
+         var instance = new cls();
+         instance.$collection = {};
+         var props = Object.getOwnPropertyNames(instance.constructor.prototype);
+         var tasks = [];
+         // collecting props and checking for setters
+         for (var i = 1; i < props.length; i++) {
+            var propertyName = props[i];
+            var isSetter = propertyName.match(/^set(.*)$/);
+            var setterName = null;
+            if (isSetter) {
+               setterName = isSetter[1]
+               setterName = setterName.charAt(0).toLowerCase() + setterName.slice(1);
+            }
+
+            if (propertyName !== "format") {
+               tasks.push({
+                  prop: propertyName,
+                  setter: setterName,
+               });
+            }
+         }
+
+         var store = function(prop, val) {
+            instance.$collection[prop] = val;
+            instance[prop] = val;
+         }
+         var evaluate = function(task) {
+
+            var result = instance[task.prop].apply(instance);
+            if (task.setter) {
+               if (isPromise(result)) {
+                  return result.then(function(res) {
+                     store(task.setter, res);
+                  });
+               } else {
+                  store(task.setter, result);
+               }
+            }
+            return result;
+         }
+
+         // Evaluating each task
+         return domainEach(tasks, function(task) {
+            return evaluate(task);
+         }).then(function() {
+            if (_.isFunction(instance["format"])) {
+               return evaluate({
+                  prop: "format"
+               });
+            }
+         }).then(function(specialFormat) {
+            if (specialFormat) {
+               return resolve(specialFormat)
+            }
+            return resolve(instance.$collection)
+         }).catch(reject);
+      })
+
+   }
    var Realm = {
       each: domainEach,
+      chain: Chain,
       merge: MergePromises,
       service: function() {
          this.register.apply(this, arguments);
