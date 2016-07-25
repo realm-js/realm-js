@@ -1,5 +1,9 @@
-# realm-js
-RealmJs is a brand new universal transpiler with built-in dependency injection.
+# Realm-js
+
+Imagine js imports on steroids! *Realm-js* respects promises, super fast as transpiling, supports aliases and runs in an isolated universal environment.
+
+
+![Coding](coding.gif)
 
 # Features
    * 100% Universal
@@ -28,14 +32,17 @@ class Application {
 export Application;
 ```
 
+
+[Medium Post](https://medium.com/@ivanorlov/universal-bridging-1e3a08015a44)
 ## Try it now!
 
-```js
-git clone git@github.com:realm-js/realm-riot-example.git
-cd realm-riot-example
+```bash
+git clone https://github.com/realm-js/universal-app-example
+npm install
+cd universal-app-example
 gulp start
 ```
-ToDo service is isolated. Frontend can access the interface, however code per se is hidden from the end users.
+ToDo service is isolated. Frontend can access the interface, however code  is hidden from the end users.
 
 </body>
 ## Header types
@@ -183,4 +190,4 @@ Explicit module name (not recommended)
 ```js
 ```
 ## Contribute
-Please, contribute. The code isn't in its best shape but rocks!
+Please, contribute!
