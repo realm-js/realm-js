@@ -234,20 +234,21 @@ All methods are executed in strict order. You can call it a waterfall.
 class MyChain {
    
    setFoo() {
-      // I execute and set this.foo = "foo1"  automatically.
+      // I am the first one. And i set this.foo = "foo1"
       return "foo1";
    }
    setBar() {
-      // Already here this.foo is available ("foo1")
-      // I execute and set this.bar = "foo1"  automatically.
+      // I am the second one, and i have "this.foo" at my disposal
+      // And i set this.bar = "bar1"
       return "bar1";
    }
    justSomethingFunky()
    {
+     // I am the third one, and everyone will wait for me
      let self = this;
-     // I am still executed! But i am not assigning anything
      return new Promise(function(resolve, reject){
-        // Everyone will wait for me!
+        // But i will not assign anything
+        // Just have to resolve myself
         return resolve(self.bar)
      })
    }
