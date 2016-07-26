@@ -15,6 +15,7 @@ Imagine js imports on steroids! *Realm-js* respects promises, super fast as tran
    * Backend encapsulation / Bridges
    * Extremely fast compilation (50-70ms) to transpile a big project
 
+### Realm-js on medium
 
 https://medium.com/@ivanorlov/universal-bridging-1e3a08015a44#.eubj7asfz
 ![Coding](doc/medium_unversal.png)
