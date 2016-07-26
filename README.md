@@ -268,7 +268,9 @@ realm.chain(MyChain).then(function(result){
 
 Executes methods in defined order. If a setter is defined, realm will assign the result into the instance of a class.
 
-You can format the output as well
+## Formatting the output
+
+You can format the output as well using "format" method.
 ```js
 class MyChain {
    setFoo() {
