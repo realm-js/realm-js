@@ -3,7 +3,7 @@
 Imagine js imports on steroids! *Realm-js* respects promises, super fast as transpiling, supports aliases and runs in an isolated universal environment.
 
 
-![Coding](coding.gif)
+![Coding](doc/coding.gif)
 
 # Features
    * 100% Universal
