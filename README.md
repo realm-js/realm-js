@@ -16,8 +16,6 @@ Imagine js imports on steroids! *Realm-js* respects promises, super fast as tran
    * Extremely fast compilation (50-70ms) to transpile a big project
 
 
-# Introduction
-
 https://medium.com/@ivanorlov/universal-bridging-1e3a08015a44#.eubj7asfz
 ![Coding](doc/medium_unversal.png)
 
