@@ -297,5 +297,53 @@ realm.chain(MyChain).then(function(result){
      // {hello : "foo1" }   
 });
 ```
+
+## Breaking chains
+If a chain needs to be broken, and but you still need the results, then you can you this.$break() method;
+```js
+class MyChain {
+   setFoo() {
+      return "foo";
+   }
+   stopMeHere() {
+      this.$break();
+   }
+
+   setPoo() {
+      return "poo"
+   }
+}
+realm.chain(MyChain).then(function(result){
+    // {foo : "foo" }    
+});
+```
+
+You can also override the output when breaking
+```js
+stopMeHere() {
+    this.$break({myOutput : "yes, you can do it"});
+}
+realm.chain(MyChain).then(function(result){
+    // {myOutput : "yes, you can do it" }  
+});
+```
+
+## Killing chains and ignoring the output
+```js
+class MyChain {
+     setFoo() {
+        return "foo";
+     }
+     stopMeHere() {
+        this.$kill();
+     }
+     setPoo() {
+        return "poo"
+     }
+}
+realm.chain(MyChain).then(function(result){
+    // undefined
+});
+```
 ## Contribute
 Please, contribute!
