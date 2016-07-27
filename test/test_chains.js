@@ -127,5 +127,27 @@ describe('Testing chain', function() {
          done();
       }).catch(done);
    });
+   it('Should throw breaks ', function(done) {
+
+      class MyChain {
+         setFoo() {
+            return "foo";
+         }
+         stopMeHere() {
+            this.$break();
+         }
+
+         setPoo() {
+            return "poo"
+         }
+      }
+
+      realm.chain(MyChain).then(function(result) {
+         result.should.deepEqual({
+            foo: "foo"
+         })
+         done();
+      }).catch(done);
+   });
 
 });

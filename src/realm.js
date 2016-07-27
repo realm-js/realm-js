@@ -170,6 +170,10 @@
             });
          }
          var instance = _.isFunction(cls) ? new cls() : cls;
+         instance.$break = function() {
+            instance.$finalized = true;
+         }
+
          instance.$collection = {};
          var props = Object.getOwnPropertyNames(instance.constructor.prototype);
          var tasks = [];
@@ -212,7 +216,7 @@
 
          // Evaluating each task
          return domainEach(tasks, function(task) {
-            return evaluate(task);
+            return !instance.$finalized ? evaluate(task) : false;
          }).then(function() {
             if (_.isFunction(instance["format"])) {
                return evaluate({
