@@ -169,7 +169,7 @@
                message: "Argument must be a class!"
             });
          }
-         var instance = new cls();
+         var instance = _.isFunction(cls) ? new cls() : cls;
          instance.$collection = {};
          var props = Object.getOwnPropertyNames(instance.constructor.prototype);
          var tasks = [];

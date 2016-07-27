@@ -104,7 +104,7 @@ describe('Testing chain', function() {
       }).catch(done);
    });
 
-   it('Should understand promises', function(done) {
+   it('Should understand created classes', function(done) {
 
       class MyChain {
          setFoo() {
@@ -119,7 +119,7 @@ describe('Testing chain', function() {
          }
       }
 
-      realm.chain(MyChain).then(function(result) {
+      realm.chain(new MyChain()).then(function(result) {
          result.should.deepEqual({
             foo: "foo",
             bar: "bar1"

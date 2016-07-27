@@ -60,7 +60,8 @@ var gulp = function(directory, target, opts) {
       var name = extractModuleName(fname, directory, preffix);
       var fcontents = file.contents.toString();
       var res = lib.analyzer(fcontents, {
-         name: name
+         name: name,
+         source: fname
       });
 
       contents.push(res.name ? lib.generator(res) : fcontents)
@@ -110,7 +111,8 @@ var universal = function(directory, dest, opts) {
          var name = extractModuleName(fname, directory, preffix);
          var contents = fs.readFileSync(fname).toString();
          var res = lib.analyzer(contents, {
-            name: name
+            name: name,
+            source: fname
          });
 
          // check if this file has been modified

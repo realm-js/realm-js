@@ -1,4 +1,5 @@
-var _ = require('lodash')
+var _ = require('lodash');
+var appRoot = require('app-root-path');
 var Parser = function() {
 
    this.prevHas = function(token) {
@@ -49,6 +50,13 @@ module.exports = function(fileContent, opts) {
    var waitingExposed = false;
    var currentClass;
    var realmType = 'module';
+   var source = opts.source;
+   if (source) {
+      var p = source.split(appRoot.path);
+      if (p.length === 2) {
+         source = p[1]
+      }
+   }
    for (var i in lines) {
       var line = lines[i];
       var skipLine = false;
@@ -171,6 +179,7 @@ module.exports = function(fileContent, opts) {
          name: modulePath,
          realmType: realmType,
          type: moduleType,
+         source: source,
          exposed: exposed,
          annotations: annotations,
          moduleNames: moduleNames,
