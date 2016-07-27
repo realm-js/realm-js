@@ -170,8 +170,13 @@
             });
          }
          var instance = _.isFunction(cls) ? new cls() : cls;
-         instance.$break = function() {
+         instance.$break = function(manual) {
             instance.$finalized = true;
+            instance.$manual = manual;
+         }
+         instance.$kill = function(manual) {
+            instance.$finalized = true;
+            instance.$killed = true;
          }
 
          instance.$collection = {};
@@ -224,10 +229,17 @@
                });
             }
          }).then(function(specialFormat) {
-            if (specialFormat) {
-               return resolve(specialFormat)
+            if (instance.$killed) {
+               return resolve();
             }
-            return resolve(instance.$collection)
+            if (!instance.$manual) {
+               if (specialFormat) {
+                  return resolve(specialFormat)
+               }
+               return resolve(instance.$collection)
+            } else {
+               resolve(instance.$manual)
+            }
          }).catch(reject);
       })
 

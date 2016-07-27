@@ -127,7 +127,7 @@ describe('Testing chain', function() {
          done();
       }).catch(done);
    });
-   it('Should throw breaks ', function(done) {
+   it('Should understand breaking ', function(done) {
 
       class MyChain {
          setFoo() {
@@ -146,6 +146,49 @@ describe('Testing chain', function() {
          result.should.deepEqual({
             foo: "foo"
          })
+         done();
+      }).catch(done);
+   });
+
+   it('Should understand breaking with manual output ', function(done) {
+
+      class MyChain {
+         setFoo() {
+            return "foo";
+         }
+         stopMeHere() {
+            this.$break(1);
+         }
+
+         setPoo() {
+            return "poo"
+         }
+      }
+
+      realm.chain(MyChain).then(function(result) {
+
+         result.should.deepEqual(1)
+         done();
+      }).catch(done);
+   });
+
+   it('Should kill the chain and resolve undefined ', function(done) {
+
+      class MyChain {
+         setFoo() {
+            return "foo";
+         }
+         stopMeHere() {
+            this.$kill();
+         }
+
+         setPoo() {
+            return "poo"
+         }
+      }
+
+      realm.chain(MyChain).then(function(result) {
+         should.equal(result, undefined);
          done();
       }).catch(done);
    });
