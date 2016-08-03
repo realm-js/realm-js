@@ -210,11 +210,11 @@ Iterates a list of promises (objects) consecutively. Respects promises if provid
 var a = [1, 2, 3];
 realm.each(a, function(num){
   return new Promise((resolve, reject) => {
-    setTimeout(function(){
+    setTimeout((
       return resolve(num++)
-    }, num);
+    ), num);
   })
-}).then(function(result){
+}).then(result => {
    // [2,3,4]
 });
 ```
@@ -224,13 +224,13 @@ And another example with optional Promise
 realm.each(a, function(num){
   if( num ===3) {
     return new Promise((resolve, reject) => {
-      setTimeout(function(){
+      setTimeout((
         return resolve("gotcha")
-      }, 1);
+      ), 1);
     })
   }
   return num;
-}).then(function(result){
+}).then(result => {
   // [1, 2, "gotcha"]
 })
 ```
@@ -255,7 +255,7 @@ class MyChain {
    {
      // I am the third one, and everyone will wait for me
      let self = this;
-     return new Promise(function(resolve, reject){
+     return new Promise((resolve, reject) => {
         // But i will not assign anything
         // Just have to resolve myself
         return resolve(self.bar)
@@ -267,7 +267,7 @@ class MyChain {
       return "world";
    }
 }
-realm.chain(MyChain).then(function(result){
+realm.chain(MyChain).then(result => {
    // {foo : "foo1", bar : "bar1", hello: "world" }   
 });
 ```
@@ -293,7 +293,7 @@ class MyChain {
       }
    }
 }
-realm.chain(MyChain).then(function(result){
+realm.chain(MyChain).then(result => {
      // {hello : "foo1" }   
 });
 ```
@@ -313,7 +313,7 @@ class MyChain {
       return "poo"
    }
 }
-realm.chain(MyChain).then(function(result){
+realm.chain(MyChain).then(result => {
     // {foo : "foo" }    
 });
 ```
@@ -341,7 +341,7 @@ class MyChain {
         return "poo"
      }
 }
-realm.chain(MyChain).then(function(result){
+realm.chain(MyChain).then(result => {
     // undefined
 });
 ```
