@@ -1,6 +1,6 @@
 var should = require('should');
-var realm = require('../index.js');
-var Promise = require("promise");
+var realm = require('../build/realm.js').realm;
+var each = realm.each;
 
 describe('Testing promise each', function() {
 

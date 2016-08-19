@@ -1,6 +1,6 @@
 var should = require('should');
-var realm = require('../index.js');
-var Promise = require("promise");
+var realm = require('../build/realm.js').realm;
+
 
 describe('Testing chain', function() {
 
@@ -134,7 +134,7 @@ describe('Testing chain', function() {
             return "foo";
          }
          stopMeHere() {
-            this.$break();
+            this.break();
          }
 
          setPoo() {
@@ -157,7 +157,7 @@ describe('Testing chain', function() {
             return "foo";
          }
          stopMeHere() {
-            this.$break(1);
+            this.break(1);
          }
 
          setPoo() {
@@ -179,7 +179,7 @@ describe('Testing chain', function() {
             return "foo";
          }
          stopMeHere() {
-            this.$kill();
+            this.kill();
          }
 
          setPoo() {

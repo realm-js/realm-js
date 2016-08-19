@@ -1,2 +1,0 @@
-"use realm";
-export MyClass {}
