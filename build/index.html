@@ -8,38 +8,42 @@
    </head>
    <body>
       <script>
-         var a = [1,2,3];
-         realm.each(a, function(item){
-            console.log(item);
-            return item+1;
+         
+         
+
+         /**
+ * require(function(a){ })
+ * require(function(){}, {local : 1})
+ * require([], function(){}, {local : 1})
+ * require(['a', 'b'], function(mystuff){ })
+ * require('method', function(mystuff){ })
+ * require('method', function(mystuff){ }, { local : 1})
+ 
+ */
+         realm.module('pukka', [], () => {
+             return new Promise((resolve)=>{
+                 return resolve("hahaha pukka")
+             });
+         });
+
+         realm.module('sukka', [ 'pukka'], (pukka) => {
+             return {
+                 pukkaResolved : pukka,
+                 
+                 sukka : 1
+             }
+         });
+
+         realm.require(function(sukka){
+            console.log("GOT sukka!!!!", sukka);
+         }, {
+             kukka : "Super Flower"
          }).then(function(data){
-            console.log("data", data)
+             console.log("require result",data);
+         }).catch(function(e){
+             console.error(e.stack)
          })
-
-         class Kukka {
-             setMoikka()
-             {
-                 return 1;
-             }
-
-             setPukka()
-             {
-                 return new Promise((resolve, reject) => {
-                     setTimeout(function(){
-                         return resolve("pukka!!")
-                     },10)
-                 })
-             }
-         }
-         realm.chain(Kukka).then(function(ouput){
-             console.log(ouput);
-         })
-
-         var a = function()
-         {
-             var data = [].concat.apply([], arguments);
-             console.log(data);
-         }
+         
       </script>
    </body>
 </html>

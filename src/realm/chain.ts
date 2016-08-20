@@ -29,7 +29,6 @@ export class Chainable {
     }
 }
 
-
 /**
  * Validates and creates extra properties for the class
  * Supports non-typescript usage
@@ -39,11 +38,14 @@ let ChainClassContructor = (input: any) => {
     if (input instanceof Chainable) {
         return input;
     }
-
+    
     let instance: Object = {};
     // if that's function'
     if (utils.isFunction(input)) {
         instance = new input();
+        if( instance instanceof Chainable ){
+            return instance;
+        }
     } else if (utils.isObject(input)) {
         instance = input;
     } else {
