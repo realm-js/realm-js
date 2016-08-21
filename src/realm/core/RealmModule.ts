@@ -1,16 +1,20 @@
 import utils from '../utils';
 
 export default class RealmModule {
-    private name: string;
     private dependencies: string[];
     private closure: { (...args): any };
     private cached : any;
 
-    constructor(a: any, b: any, c: any) {
-        if (!utils.isString(a)) {
-            throw new Error("Module first argument must be string!")
-        }
-        this.name = a;
+    /**
+     * @param  {any} a
+     * @param  {any} b
+     * @param  {any} c
+     */
+    constructor(
+        private name: string, 
+        b: any, 
+        c: any, 
+        private ts_module = false) {
 
         if (utils.isFunction(b)) {
             this.closure = b;
@@ -23,27 +27,63 @@ export default class RealmModule {
             this.closure = c;
         }
     }
-    public isCached()
+    
+    public isTypeScript()
+    {
+        return this.ts_module;
+    }
+    
+    /**
+     * Tells if a module was cached
+     * @returns boolean
+     */
+    public isCached() : boolean
     {
         return this.cached !== undefined;
     }
-
-    public getCache()
+    /**
+     * Gives cached object
+     * @returns any
+     */
+    public getCache() : any
     {
         return this.cached;
     }
     
-    public setCache(obj : any)
+    /**
+     * Sets cached
+     * @param  {any} obj
+     */
+    public setCache(obj : any) : any
     {
         this.cached = obj;
+        return obj;
     }
-    public getName() {
+
+    /** 
+     * Gives string name of a module
+     * @returns string
+     */
+    public getName() : string {
         return this.name;
     }
-    public getDependencies() {
+
+    /**
+     * Returns an array (strings) of dependencies
+     * @returns string
+     */
+    public getDependencies() : string[] {
         return this.dependencies;
     }
-    public getClosure() {
+
+    
+    
+    
+    /**
+     * Returns a closure
+     * @returns any
+     */
+    public getClosure() : { (...args): any } {
         return this.closure;
     }
 

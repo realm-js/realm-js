@@ -8,7 +8,7 @@ import utils from './utils';
 export var Each = (argv: any, cb: { (...args): any }) => {
     return new Promise((resolve, reject) => {
         const results = [];
-        const isObject = utils.isObject(argv);
+        const isObject = utils.isPlainObject(argv);
         let index: number = -1;
         let iterate = () => {
             index++;
@@ -17,11 +17,14 @@ export var Each = (argv: any, cb: { (...args): any }) => {
                 let value = isObject ? argv[key] : argv[index];
                 // Promises need to be resolved
                 if (utils.isPromise(value)) {
-                    value.then((data) => { results.push(data); iterate(); }).catch(reject);
+                    value.then(data => { results.push(data); iterate(); }).catch(reject);
                 } else {
                     let res = cb(...[value, key]);
                     if (utils.isPromise(res)) {
-                        res.then(a => { results.push(a);  iterate(); }).catch(reject);
+                        res.then((a) => {
+                            results.push(a);
+                            iterate();
+                        }).catch(reject);
                     } else {
                         results.push(res);
                         iterate();

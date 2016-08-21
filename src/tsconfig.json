@@ -7,7 +7,7 @@
         "jsx": "react",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": true,
+        "declaration":true,
         "noImplicitAny": false,
         "noImplicitUseStrict": false,
         "removeComments": true,
@@ -17,9 +17,7 @@
         "suppressImplicitAnyIndexErrors": true
     },
     "exclude": [
-        "node_modules",
-        "typings/browser",
-        "typings/browser.d.ts"
+       
     ],
     "compileOnSave": false,
     "buildOnSave": false,

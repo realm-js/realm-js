@@ -20,6 +20,8 @@
  * require('method', function(mystuff){ }, { local : 1})
  
  */
+
+        
          realm.module('pukka', [], () => {
              return new Promise((resolve)=>{
                  return resolve("hahaha pukka")
@@ -34,12 +36,28 @@
              }
          });
 
-         realm.require(function(sukka){
-            console.log("GOT sukka!!!!", sukka);
+         realm.module('foo', ['pukka'], (pukka) => {
+             
+             return new Promise(x => x('pukka') );
+            
+             
+         });
+         
+         realm.ts_module('ts_bar', ['foo'], function(exports, require){
+             var f = require('foo');
+             console.log("AAAA", f);
+             exports.poo = 'this is poo';
+         });
+
+         realm.module('ooo', ['ts_bar'], function(ts_bar){
+             console.log("ts_bar is", ts_bar);
+         })
+
+         realm.require((ooo, sukka) => {
+            
+            return 2;
          }, {
-             kukka : "Super Flower"
-         }).then(function(data){
-             console.log("require result",data);
+             sukka : 1
          }).catch(function(e){
              console.error(e.stack)
          })

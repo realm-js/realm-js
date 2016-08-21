@@ -1,5 +1,7 @@
 import RealmModule from './RealmModule';
 
+import {Sukka} from 'b';
+
 // Define environment it's either global node modules or window
 const environment = $isBackend ? global : window;
 
@@ -16,5 +18,9 @@ export default class Storage {
     }
     static get(name: string) : RealmModule {
         return environment.__realm__[name];
+    }
+    static flush(): void
+    {
+        environment.__realm__ = {};
     }
 }

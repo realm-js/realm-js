@@ -15,11 +15,12 @@ gulp.task('watch', function() {
 var tsProject = ts.createProject('src/tsconfig.json');
 
 gulp.task('ts', function() {
-   return gulp.src('src/**/*.ts')
+   let result = gulp.src('src/**/*.ts')
    .pipe(sourcemaps.init())
-   .pipe(ts(tsProject))
+   .pipe(ts(tsProject));
 
-      .pipe(tsUniversal('build/', {
+      result.dts.pipe(gulp.dest('build/definitions'));
+   return result.js.pipe(tsUniversal('build/', {
          base: 'build/',
          expose: 'realm'
       }))

@@ -38,7 +38,7 @@ class _RequireArgumentParser  {
      * To have easier access to them
      * Due to limited amount of arguments (3) we denormalize it
      */
-    constructor(input: any[]) {
+    constructor(private input: any[]) {
         this.first = input[0];
         this.second = input[1];
         this.third = input[2];
@@ -108,6 +108,7 @@ class _RequireArgumentParser  {
      */
     format() : RequireOptions
     {
+     
         if ( !utils.isFunction(this.target) ){
             throw new Error("Require method requires a closure!");
         }

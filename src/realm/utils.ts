@@ -6,6 +6,7 @@ const objectCtorString = funcToString.call(Object);
 const objectToString = objectProto.toString;
 const objectTag = '[object Object]';
 const funcTag = '[object Function]';
+const funcTag2 = '[Function]';
 const genTag = '[object GeneratorFunction]';
 
 
@@ -25,7 +26,7 @@ export default class Utils {
 
   static isFunction(value: any) {
     var tag = this.isObject(value) ? objectToString.call(value) : '';
-    return tag == funcTag || tag == genTag;
+    return tag === funcTag2 || tag == funcTag || tag == genTag;
   }
 
   //isObject
