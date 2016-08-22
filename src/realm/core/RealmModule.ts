@@ -1,7 +1,8 @@
 import utils from '../utils';
+import {DependencyFromInjection, Dependency} from './RequireArgumentParser'
 
 export default class RealmModule {
-    private dependencies: string[];
+    private dependencies: Dependency[];
     private closure: { (...args): any };
     private cached : any;
     private name : string;
@@ -22,18 +23,16 @@ export default class RealmModule {
         if (utils.isFunction(b)) {
             this.closure = b;
         }
+        let injections = [];
         if (utils.isArray(b)) {
-            this.dependencies = b;
+            injections = b;
             if (!utils.isFunction(c)) {
                 throw new Error("Module must have a closure!")
             }
             this.closure = c;
         }
-
-        if ( name.indexOf('@') > -1 ){
-            let s =  name.split('@');
-            [this.name, this.alias] = name.split('@');
-        }
+        
+        this.dependencies = DependencyFromInjection.create(injections);
     }
     
     public isTypeScript()
@@ -80,11 +79,9 @@ export default class RealmModule {
      * Returns an array (strings) of dependencies
      * @returns string
      */
-    public getDependencies() : string[] {
+    public getDependencies() : Dependency[] {
         return this.dependencies;
     }
-
-    
     
     
     /**

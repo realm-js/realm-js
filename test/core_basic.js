@@ -17,10 +17,10 @@ describe('Realm require test', function(done) {
 	});
 
     it('Should require a simple module with dependency', function(done) {
-		realm.module("b", [], () => {
+		realm.module("bb", [], () => {
             return 2;
         });
-        realm.module("a", ['b'], (b) => {
+        realm.module("a", ['bb'], (b) => {
             return b;
         });
         realm.require((a) => {

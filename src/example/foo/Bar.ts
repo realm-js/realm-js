@@ -9,7 +9,7 @@ export class Bar {
 
     saySomething()
     {
-        //   
+        //   sdfdd
     }
 }
 

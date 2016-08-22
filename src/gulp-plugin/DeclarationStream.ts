@@ -25,9 +25,8 @@ export default class DeclarationStream extends GulpStream {
         contents = contents.replace(/\s+declare\s+/g, ' ');
 
         // wrapping into a module
-        contents = "declare module '" + declaration.config.name 
-            + "' {\n\t" + contents.split('\n').join('\n\t') + "\n}";
-
+        contents = `declare module '${declaration.config.name}' {\n\t${contents.split('\n').join('\n\t')}\n}`
+        
         this.concat.add(null, contents);
 
     }

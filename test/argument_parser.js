@@ -2,12 +2,23 @@ const should = require('should');
 const realm = require('../build/realm.js').realm;
 const each = realm.each;
 const parser = realm.RequireArgumentParser;
+
+
+let dep2Object = (list) => {
+    var data = [];
+    for (let i = 0; i < list.length; i++) {
+        var item = list[i];
+        data.push({ name: item.name, alias: item.alias })
+    }
+    return data;
+}
 describe('RequireArgumentParser test', function () {
 
     it('First is a function (1 argument)', function () {
         let result = parser([(a) => { }]);
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['a'])
+        console.log(result.dependencies);
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'a', alias: 'a' }])
         result.locals.should.deepEqual({})
 
 
@@ -17,7 +28,8 @@ describe('RequireArgumentParser test', function () {
         let result = parser([(a, b) => { }, { foo: 'bar' }]);
 
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['a', 'b'])
+
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'a', alias: 'a' }, { name: 'b', alias: 'b' }])
         result.locals.should.deepEqual({ foo: 'bar' })
 
     });
@@ -35,14 +47,15 @@ describe('RequireArgumentParser test', function () {
         let result = parser(['hello', (a, b) => { }])
 
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['hello'])
+
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'hello', alias: 'hello' }])
         result.locals.should.deepEqual({})
 
     });
     it('First is a string (3 arguments)', function () {
         let result = parser(['hello', (a, b) => { }, { bar: 'foo' }]);
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['hello'])
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'hello', alias: 'hello' }])
         result.locals.should.deepEqual({ bar: 'foo' })
 
     });
@@ -63,7 +76,7 @@ describe('RequireArgumentParser test', function () {
 
 
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['hello', 'world'])
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'hello', alias: 'hello' }, { name: 'world', alias: 'world' }])
         result.locals.should.deepEqual({})
 
     });
@@ -72,7 +85,7 @@ describe('RequireArgumentParser test', function () {
 
 
         result.target.should.be.type('function')
-        result.injections.should.deepEqual(['hello', 'world'])
+        dep2Object(result.dependencies).should.deepEqual([{ name: 'hello', alias: 'hello' }, { name: 'world', alias: 'world' }])
         result.locals.should.deepEqual({ bar: 'foo' })
 
     });

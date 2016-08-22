@@ -1,10 +1,38 @@
 import utils from '../utils';
 
-export interface RequireOptions
+export class RequireOptions
 {
-    target : { (...args) : any };
-    injections : string[];
-    locals : {};
+    constructor(public target : { (...args) : any }, public dependencies : Dependency[],public locals : {}){}
+}
+
+export class Dependency
+{
+    constructor( public name : string, public alias : string = name){}
+}
+
+/**
+ * Create Dependency object fro a list of strings
+ * ['a', 'b@SomeAlias']
+ */
+export class DependencyFromInjection {
+    static create(injections : string[]) : Dependency[]
+    {
+        let dependencies = [];
+        for( let i = 0; i< injections.length; i++){
+            let name : string | Dependency = injections[i];
+            if ( name instanceof Dependency){
+                 dependencies.push(name);
+            } else {
+                let alias = name;
+                if( name.indexOf('@') > -1  ){
+                    [name, alias] = name.split('@');
+                }
+                dependencies.push(new Dependency(name, alias));
+            }
+        }
+        
+        return dependencies;
+    }
 }
 
 /**
@@ -39,6 +67,7 @@ class _RequireArgumentParser  {
      * Due to limited amount of arguments (3) we denormalize it
      */
     constructor(private input: any[]) {
+        
         this.first = input[0];
         this.second = input[1];
         this.third = input[2];
@@ -112,11 +141,9 @@ class _RequireArgumentParser  {
         if ( !utils.isFunction(this.target) ){
             throw new Error("Require method requires a closure!");
         }
-        return <RequireOptions> {
-            target : this.target,
-            injections : this.injections,
-            locals : this.locals
-        } 
+        let deps = DependencyFromInjection.create(this.injections);
+        let opts = new RequireOptions(this.target, deps, this.locals);
+        return opts;
     }
 }
 
