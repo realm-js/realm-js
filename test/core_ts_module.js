@@ -15,6 +15,23 @@ describe('Realm require test', function(done) {
         }).catch(done);
 	});
 
+
+
+     it('Should successfully use local "require" with alias', function(done) {
+		
+        realm.module("a", [], () => {
+            return "a";
+        });
+        realm.ts_module("b", ['a'], (exports, require) => {
+            exports.data = require('../SomeStuff');
+        });
+        realm.require((b) => {
+            b.should.deepEqual({data : 'a'});
+            realm.flush();
+            done();
+        }).catch(done);
+	});
+
     it('Should successfully use local "require" with [REGULAR] module', function(done) {
 		
         realm.module("a", [], () => {

@@ -1,6 +1,8 @@
 import utils from './utils';
 import { Each } from './each';
 
+
+
 export class Chainable {
     protected $finalized: boolean = false;
     protected $killed: boolean = false;

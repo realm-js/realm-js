@@ -16,7 +16,10 @@
     "url": "https://github.com/realm-js/realm-js/issues"
   },
   "homepage": "https://github.com/realm-js/realm-js#readme",
-  "dependencies": {},
+  "dependencies": {
+    "concat-with-sourcemaps": "^1.0.4",
+    "through2": "^2.0.1"
+  },
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",

@@ -1,0 +1,6 @@
+import RealmModule from './RealmModule';
+export default class Storage {
+    static set(name: string, obj: RealmModule): void;
+    static get(name: string): RealmModule;
+    static flush(): void;
+}

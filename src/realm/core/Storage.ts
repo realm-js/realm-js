@@ -1,6 +1,5 @@
 import RealmModule from './RealmModule';
 
-import {Sukka} from 'b';
 
 // Define environment it's either global node modules or window
 const environment = $isBackend ? global : window;

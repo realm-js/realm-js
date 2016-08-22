@@ -4,6 +4,8 @@ export default class RealmModule {
     private dependencies: string[];
     private closure: { (...args): any };
     private cached : any;
+    private name : string;
+    private alias : string;
 
     /**
      * @param  {any} a
@@ -11,11 +13,12 @@ export default class RealmModule {
      * @param  {any} c
      */
     constructor(
-        private name: string, 
+        
+        name: string, 
         b: any, 
         c: any, 
         private ts_module = false) {
-
+        this.name = name;
         if (utils.isFunction(b)) {
             this.closure = b;
         }
@@ -25,6 +28,11 @@ export default class RealmModule {
                 throw new Error("Module must have a closure!")
             }
             this.closure = c;
+        }
+
+        if ( name.indexOf('@') > -1 ){
+            let s =  name.split('@');
+            [this.name, this.alias] = name.split('@');
         }
     }
     

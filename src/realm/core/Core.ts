@@ -11,7 +11,8 @@ let _module = (name: string, b: any, c: any) => {
 }
 
 let _ts_module = (name: string, b: any, c: any) => {
-    Storage.set(name, new RealmModule(name, b, c, true));
+    let localModule =  new RealmModule(name, b, c, true);
+    Storage.set(localModule.getName(),localModule);
 }
 
 let _resolve = (opts: RequireOptions, injection: string) => {
@@ -42,12 +43,11 @@ let _apply = (opts: RequireOptions, results : Array<any>, mod? : RealmModule) =>
     // handle typescript modules differently
     // basically we applying only 2 variables - {exports, require}
     if( mod !== undefined && mod.isTypeScript() ){
-        let _exports = {};
-        let _env = {};
+        let [_exports, _env] = [{}, {}];
         for( let index = 0; index < opts.injections.length; index++){
             _env[opts.injections[index]] = results[index];
         }
-        opts.target(...[_exports, x => _env[x]])
+        opts.target(...[_exports, x => _env[x] ])
         return _exports;
     };
     return opts.target(...results) 
